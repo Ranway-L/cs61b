@@ -1,3 +1,12 @@
+public class Dog
+{
+    public int weightInPounds;
+    public static String binmen = "Doooooooooog";
+
+    public Dog (int stra)
+}
+
+
 public class DogLoop
 {
     public static void main(String[] args) 
