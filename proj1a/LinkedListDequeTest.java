@@ -100,7 +100,9 @@ public class LinkedListDequeTest {
 		a.removeLast();
 	}
 	public void getTest() {
-
+		LinkedListDeque<Integer> a = new LinkedListDeque<>();
+		a.addLast(0);
+		int b = a.get(0);
 	}
 
 	public static void main(String[] args) {
@@ -108,8 +110,11 @@ public class LinkedListDequeTest {
 //		addIsEmptySizeTest();
 //		addRemoveTest();
 		LinkedListDeque<Integer> a = new LinkedListDeque<>();
-		a.addLast(0);
-		int b = a.get(0);
-
+		a.isEmpty();
+		a.addLast(1);
+		a.removeFirst();    //==> 1
+		a.isEmpty();
+		a.addLast(4);
+		a.removeFirst();    //==> null
 	}
 } 

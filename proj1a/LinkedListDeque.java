@@ -52,7 +52,7 @@ public class LinkedListDeque<T> {
         }
         Node temp = forWard.next;
         forWard.next = forWard.next.next;
-        forWard.next.prev = forWard.next;
+        forWard.next.prev = forWard;
         return temp.item;
     }
     public T removeLast() {
