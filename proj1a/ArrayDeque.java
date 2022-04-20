@@ -8,7 +8,7 @@ public class ArrayDeque<T> {
         items = (T[])new Object[8];
         size = 0;
         nextFirst = 0;
-        nextLast = 0;
+        nextLast = 1;
         load_ratio = 0;
        }
     public void addFirst(T item) {
@@ -17,8 +17,8 @@ public class ArrayDeque<T> {
         }
         items[nextFirst] = item;
         size++;
-        nextFirst = backward_one(nextFirst);
-        load_ratio = size / items.length;
+        nextFirst = minus_one(nextFirst);
+        load_ratio = (float)size / items.length;
     }
     public void addLast(T item) {
         if (size == items.length) {
@@ -26,15 +26,15 @@ public class ArrayDeque<T> {
         }
         items[nextLast] = item;
         size++;
-        nextLast = forward_one(nextFirst);
-        load_ratio = size / items.length;
+        nextLast = plus_one(nextFirst);
+        load_ratio = (float)size / items.length;
     }
 //    private void resize_array(int capacity) {
 //        T[] a = (T[])new Object[capacity];
 //        System.arraycopy(items,0,a,0,size);
 //        items = a;
 //    }
-    private int forward_one(int index) {
+    private int plus_one(int index) {
         if (index == items.length - 1) {
             return 0;
         }
@@ -43,7 +43,7 @@ public class ArrayDeque<T> {
         }
     }
 
-    private int backward_one(int index) {
+    private int minus_one(int index) {
         if (index == 0) {
             return items.length - 1;
         }
@@ -53,12 +53,12 @@ public class ArrayDeque<T> {
     }
     private void grow() {
         T[] a = (T[])new Object[items.length * 2];
-        if (backward_one(nextLast) > forward_one(nextFirst)) {
+        if (minus_one(nextLast) > plus_one(nextFirst)) {
             System.arraycopy(items,0,a,0,size);
         }
         else {
-            System.arraycopy(items,backward_one(nextFirst),a,0,items.length - backward_one(nextFirst));
-            System.arraycopy(items,0,a,items.length - backward_one(nextFirst),backward_one(nextLast));
+            System.arraycopy(items,minus_one(nextFirst),a,0,items.length - minus_one(nextFirst));
+            System.arraycopy(items,0,a,items.length - minus_one(nextFirst),minus_one(nextLast));
         }
         items = a;
         nextFirst = items.length - 1;
@@ -67,12 +67,12 @@ public class ArrayDeque<T> {
 
     private void shrink() {
         T[] a = (T[])new Object[items.length / 2];
-        if (backward_one(nextLast) > forward_one(nextFirst)) {
+        if (minus_one(nextLast) > plus_one(nextFirst)) {
             System.arraycopy(items, 0,  a, 0, size);
         }
         else {
-            System.arraycopy(items, backward_one(nextFirst), a, 0, items.length - backward_one(nextFirst));
-            System.arraycopy(items,0, a, items.length - backward_one(nextFirst), backward_one(nextLast));
+            System.arraycopy(items, minus_one(nextFirst), a, 0, items.length - minus_one(nextFirst));
+            System.arraycopy(items,0, a, items.length - minus_one(nextFirst), minus_one(nextLast));
         }
         items = a;
         nextFirst = items.length - 1;
@@ -91,11 +91,11 @@ public class ArrayDeque<T> {
     }
     public T removeFirst() {
         T temp;
-        nextFirst = forward_one(nextFirst);
+        nextFirst = plus_one(nextFirst);
         temp  = get(nextFirst);
         items[nextFirst] = null;
         size--;
-        load_ratio = size / items.length;
+        load_ratio = (float)size / items.length;
 
         if (load_ratio < 0.25) {
            shrink();
@@ -104,17 +104,27 @@ public class ArrayDeque<T> {
     }
     public T removeLast() {
         T temp;
-        nextLast = backward_one(nextLast);
+        nextLast = minus_one(nextLast);
         temp = get(nextLast);
         items[nextLast] = null;
         size--;
-        load_ratio = size / items.length;
+        load_ratio = (float)size / items.length;
         if (load_ratio < 0.25) {
             shrink();
         }
         return temp;
     }
     public T get(int index) {
-        return items[index];
+        if (index >= size) {
+            return null;
+        }
+        if (minus_one(nextLast) > plus_one(nextFirst)) {  //循环数组未越界情况
+            return items[plus_one(nextFirst) + index];
+        }
+        if (items.length - plus_one(nextFirst) > index) { //循环数组越界情况1
+            return items[plus_one(nextFirst) + index];
+        }
+        //循环数组越界情况2
+        return items[plus_one(nextFirst) - items.length + index];
     }
 }
