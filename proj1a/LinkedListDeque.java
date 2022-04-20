@@ -47,19 +47,25 @@ public class LinkedListDeque<T> {
 
     }
     public T removeFirst() {
+        if (this.isEmpty()) {
+            return null;
+        }
         Node temp = forWard.next;
         forWard.next = forWard.next.next;
         forWard.next.prev = forWard.next;
         return temp.item;
     }
     public T removeLast() {
+        if (this.isEmpty()) {
+            return null;
+        }
         Node temp = backWard.prev;
         backWard.prev = backWard.prev.prev;
         backWard.prev.next = backWard;
         return temp.item;
     }
     public T get(int index) {
-        Node p = forWard;
+        Node p = forWard.next;
         for (int i = 0; i < index; i += 1) {
             p = p.next;
         }
@@ -67,9 +73,9 @@ public class LinkedListDeque<T> {
     }
     public T getRecursive(int index) {
         if (index == 0) {
-            return null;
+            return forWard.next.item;
         }
-        Node p = forWard;
+        Node p = forWard.next;
         return getRecursiveHelper(index, p); //Help函数可以用于保存递归函数中的计数变量
     }
     private T getRecursiveHelper(int index, Node p) {
