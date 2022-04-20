@@ -1,7 +1,7 @@
 public class LinkedListDeque<T> {
     private int size = 0;
-    private Node Forward;
-    private Node Backward;
+    private Node forWard;
+    private Node backWard;
     private class Node {
         T item;
         Node next;
@@ -13,34 +13,33 @@ public class LinkedListDeque<T> {
         }
     }
     public LinkedListDeque() {
-        Forward = new Node(null,null,null);
-        Backward = new Node(null,null,null);
-        Forward.next = Backward;
-        Backward.prev = Forward;
+        forWard = new Node(null, null, null);
+        backWard = new Node(null, null, null);
+        forWard.next = backWard;
+        backWard.prev = forWard;
         size = 0;
     }
 //    public LinkedListDeque(LinkedListDeque other) {
 //
 //    }
     public void addFirst(T item) {
-        Forward.next = new Node(item,Forward.next,Forward);
+        forWard.next = new Node(item, forWard.next, forWard);
+        forWard.next.next.prev = forWard.next;
         size += 1;
     }
     public void addLast(T item) {
-        Backward.prev = new Node(item,Backward,Backward.prev);
+        backWard.prev = new Node(item, backWard, backWard.prev);
+        backWard.prev.prev.next = backWard.prev;
         size += 1;
     }
     public boolean isEmpty() {
-        if (Forward.next == Backward) {
-            return true;
-        }
-        return false;
+        return forWard.next == backWard;
     }
     public int size() {
         return size;
     }
     public void printDeque() {
-        Node p = Forward;
+        Node p = forWard;
         while (p.next != null) {
             p = p.next;
             System.out.print(p.item + " ");
@@ -48,20 +47,20 @@ public class LinkedListDeque<T> {
 
     }
     public T removeFirst() {
-        Node temp = Forward.next;
-        Forward.next = Forward.next.next;
-        Forward.next.prev = Forward.next;
+        Node temp = forWard.next;
+        forWard.next = forWard.next.next;
+        forWard.next.prev = forWard.next;
         return temp.item;
     }
     public T removeLast() {
-        Node temp = Backward.prev;
-        Backward.prev = Backward.prev.prev;
-        Backward.prev.next = Backward;
+        Node temp = backWard.prev;
+        backWard.prev = backWard.prev.prev;
+        backWard.prev.next = backWard;
         return temp.item;
     }
     public T get(int index) {
-        Node p = Forward;
-        for (int i = 0; i < index;i += 1) {
+        Node p = forWard;
+        for (int i = 0; i < index; i += 1) {
             p = p.next;
         }
         return p.item;
@@ -70,7 +69,7 @@ public class LinkedListDeque<T> {
         if (index == 0) {
             return null;
         }
-        Node p = Forward;
+        Node p = forWard;
         return getRecursiveHelper(index, p); //Help函数可以用于保存递归函数中的计数变量
     }
     private T getRecursiveHelper(int index, Node p) {
@@ -78,6 +77,6 @@ public class LinkedListDeque<T> {
             return p.item;
         }
         p = p.next;
-        return getRecursiveHelper(index-1, p);
+        return getRecursiveHelper(index - 1, p);
     }
 }

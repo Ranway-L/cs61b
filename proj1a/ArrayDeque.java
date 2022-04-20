@@ -1,39 +1,39 @@
-public class ArrayDeque<Type> {
-    private Type[] items;
+public class ArrayDeque<T> {
+    private T[] items;
     private int size;
     private int nextFirst;
     private int nextLast;
     private float load_ratio;
     public ArrayDeque() {
-        items = (Type[])new Object[8];
+        items = (T[])new Object[8];
         size = 0;
         nextFirst = 0;
         nextLast = 0;
         load_ratio = 0;
-   }
-    public void addFirst(Type item) {
+       }
+    public void addFirst(T item) {
         if (size == items.length) {
             grow();
         }
         items[nextFirst] = item;
         size++;
         nextFirst = backward_one(nextFirst);
-        load_ratio = size/ items.length;
+        load_ratio = size / items.length;
     }
-    public void addLast(Type item) {
+    public void addLast(T item) {
         if (size == items.length) {
             grow();
         }
         items[nextLast] = item;
         size++;
         nextLast = forward_one(nextFirst);
-        load_ratio = size/ items.length;
+        load_ratio = size / items.length;
     }
-    private void resize_array(int capacity) {
-        Type[] a = (Type[])new Object[capacity];
-        System.arraycopy(items,0,a,0,size);
-        items = a;
-    }
+//    private void resize_array(int capacity) {
+//        T[] a = (T[])new Object[capacity];
+//        System.arraycopy(items,0,a,0,size);
+//        items = a;
+//    }
     private int forward_one(int index) {
         if (index == items.length - 1) {
             return 0;
@@ -52,7 +52,7 @@ public class ArrayDeque<Type> {
         }
     }
     private void grow() {
-        Type[] a = (Type[])new Object[items.length * 2];
+        T[] a = (T[])new Object[items.length * 2];
         if (backward_one(nextLast) > forward_one(nextFirst)) {
             System.arraycopy(items,0,a,0,size);
         }
@@ -66,13 +66,13 @@ public class ArrayDeque<Type> {
     }
 
     private void shrink() {
-        Type[] a = (Type[])new Object[items.length / 2];
+        T[] a = (T[])new Object[items.length / 2];
         if (backward_one(nextLast) > forward_one(nextFirst)) {
-            System.arraycopy(items,0,a,0,size);
+            System.arraycopy(items, 0,  a, 0, size);
         }
         else {
-            System.arraycopy(items,backward_one(nextFirst),a,0,items.length - backward_one(nextFirst));
-            System.arraycopy(items,0,a,items.length - backward_one(nextFirst),backward_one(nextLast));
+            System.arraycopy(items, backward_one(nextFirst), a, 0, items.length - backward_one(nextFirst));
+            System.arraycopy(items,0, a, items.length - backward_one(nextFirst), backward_one(nextLast));
         }
         items = a;
         nextFirst = items.length - 1;
@@ -85,37 +85,36 @@ public class ArrayDeque<Type> {
         return size;
     }
     public void printDeque() {
-      for(int i = 0; i < size; i++) {
-          System.out.print(items[i] + " ");
-      }
+        for(int i = 0; i < size; i++) {
+            System.out.print(items[i] + " ");
+         }
     }
-    public Type removeFirst() {
-        Type temp;
+    public T removeFirst() {
+        T temp;
         nextFirst = forward_one(nextFirst);
         temp  = get(nextFirst);
         items[nextFirst] = null;
         size--;
-        load_ratio = size/ items.length;
+        load_ratio = size / items.length;
 
         if (load_ratio < 0.25) {
            shrink();
         }
-
         return temp;
     }
-    public Type removeLast() {
-        Type temp;
+    public T removeLast() {
+        T temp;
         nextLast = backward_one(nextLast);
         temp = get(nextLast);
         items[nextLast] = null;
-        size --;
-        load_ratio = size/ items.length;
+        size--;
+        load_ratio = size / items.length;
         if (load_ratio < 0.25) {
             shrink();
         }
         return temp;
     }
-    public Type get(int index) {
+    public T get(int index) {
         return items[index];
     }
 }
