@@ -55,5 +55,8 @@ public class ArrayDequeTest {
         item.addFirst(5);
         item.addFirst(6);
         item.addFirst(7);
+        item.removeLast();
+        item.removeLast();
+
     }
 }

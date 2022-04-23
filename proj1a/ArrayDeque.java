@@ -76,7 +76,7 @@ public class ArrayDeque<T> {
             System.arraycopy(items,0, a, contain - front, nextLast);
         }
         items = a;
-        contain /= 2;
+        contain = items.length;
         front = 0;
         nextLast = size;
         return a;
