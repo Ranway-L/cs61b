@@ -60,14 +60,14 @@ public class ArrayDeque<T> {
     }
     private void grow() {
         T[] a = (T[])new Object[items.length * 2];
-        transform(a);
+        items = transform(a);
     }
 
     private void shrink() {
         T[] a = (T[])new Object[items.length / 2];
-        transform(a);
+        items = transform(a);
     }
-    private void transform(T[] a) {
+    private T[] transform(T[] a) {
         if (nextLast > front) {
             System.arraycopy(items, front,  a, 0, size);
         }
@@ -78,7 +78,8 @@ public class ArrayDeque<T> {
         items = a;
         contain /= 2;
         front = 0;
-        nextLast = plus_one(size);
+        nextLast = size;
+        return a;
     }
     public boolean isEmpty() {
         return size == 0;

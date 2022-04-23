@@ -44,4 +44,16 @@ public class ArrayDequeTest {
         item.addFirst(7);
         assertTrue(7 == item.get(0));
     }
+    @Test
+    public void add_remove_emptyTest() {
+        ArrayDeque<Integer> item = new ArrayDeque<>();
+        item.addFirst(0);
+        item.addFirst(1);
+        int a = item.removeFirst();
+        item.isEmpty();
+        item.addFirst(4);
+        item.addFirst(5);
+        item.addFirst(6);
+        item.addFirst(7);
+    }
 }
