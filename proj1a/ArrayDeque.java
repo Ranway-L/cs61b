@@ -84,6 +84,14 @@ public class ArrayDeque<T> {
     public boolean isEmpty() {
         return size == 0;
     }
+    public void setEmpty() {
+        items = (T[])new Object[8];
+        size = 0;
+        front = 0;
+        nextLast = 0;
+        load_ratio = 0;
+        contain = 8;
+    }
     public int size() {
         return size;
     }
@@ -93,11 +101,21 @@ public class ArrayDeque<T> {
          }
     }
     public T removeFirst() {
+        if (size == 0) {
+            return null;
+        }
         T temp;
         temp  = get(0);
         items[front] = null;
-        front = plus_one(front);
         size--;
+        if (isEmpty()) {
+            setEmpty();
+            return temp;
+        }
+        else {
+            front = plus_one(front);
+        }
+
         load_ratio = (float)size / items.length;
         if (load_ratio < 0.25) {
            shrink();
@@ -105,11 +123,18 @@ public class ArrayDeque<T> {
         return temp;
     }
     public T removeLast() {
+        if (size == 0) {
+            return null;
+        }
         T temp;
         temp  = get(size - 1);
         nextLast = minus_one(nextLast);
         items[nextLast] = null;
         size--;
+        if (isEmpty()) {
+            setEmpty();
+            return temp;
+        }
         load_ratio = (float)size / items.length;
         if (load_ratio < 0.25) {
             shrink();

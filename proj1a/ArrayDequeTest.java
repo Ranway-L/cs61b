@@ -59,4 +59,11 @@ public class ArrayDequeTest {
         item.removeLast();
 
     }
+    @Test
+    public void getTest() {
+        ArrayDeque<Integer> item = new ArrayDeque<>();
+        item.addFirst(0);
+        item.get(0);
+        item.removeFirst();
+    }
 }
