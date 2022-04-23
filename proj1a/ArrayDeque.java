@@ -1,32 +1,36 @@
 public class ArrayDeque<T> {
     private T[] items;
     private int size;
-    private int nextFirst;
+    private int front;
     private int nextLast;
     private float load_ratio;
+    private int contain;
     public ArrayDeque() {
         items = (T[])new Object[8];
         size = 0;
-        nextFirst = 0;
-        nextLast = 1;
+        front = 0;
+        nextLast = 0;
         load_ratio = 0;
+        contain = 8;
        }
     public void addFirst(T item) {
+        front = minus_one(front);     //addFirst指针指向头部，addLast指针指向末尾右移一位。
+        items[front] = item;
+        size++;
         if (size == items.length) {
             grow();
         }
-        items[nextFirst] = item;
-        size++;
-        nextFirst = minus_one(nextFirst);
         load_ratio = (float)size / items.length;
+
+
     }
     public void addLast(T item) {
+        items[nextLast] = item;
+        nextLast = plus_one(nextLast);
+        size++;
         if (size == items.length) {
             grow();
         }
-        items[nextLast] = item;
-        size++;
-        nextLast = plus_one(nextFirst);
         load_ratio = (float)size / items.length;
     }
 //    private void resize_array(int capacity) {
@@ -35,48 +39,46 @@ public class ArrayDeque<T> {
 //        items = a;
 //    }
     private int plus_one(int index) {
-        if (index == items.length - 1) {
+      /*  if (index == items.length - 1) {
             return 0;
         }
         else {
             return index + 1;
-        }
+        }*/
+        //这方法太tm机智了！
+        return (index + contain + 1) % contain;
     }
 
     private int minus_one(int index) {
-        if (index == 0) {
+    /*  if (index == 0) {
             return items.length - 1;
         }
         else {
             return index - 1;
-        }
+        }*/
+        return (index + contain - 1) % contain;
     }
     private void grow() {
         T[] a = (T[])new Object[items.length * 2];
-        if (minus_one(nextLast) > plus_one(nextFirst)) {
-            System.arraycopy(items,0,a,0,size);
-        }
-        else {
-            System.arraycopy(items,minus_one(nextFirst),a,0,items.length - minus_one(nextFirst));
-            System.arraycopy(items,0,a,items.length - minus_one(nextFirst),minus_one(nextLast));
-        }
-        items = a;
-        nextFirst = items.length - 1;
-        nextLast = size;
+        transform(a);
     }
 
     private void shrink() {
         T[] a = (T[])new Object[items.length / 2];
-        if (minus_one(nextLast) > plus_one(nextFirst)) {
-            System.arraycopy(items, 0,  a, 0, size);
+        transform(a);
+    }
+    private void transform(T[] a) {
+        if (nextLast > front) {
+            System.arraycopy(items, front,  a, 0, size);
         }
         else {
-            System.arraycopy(items, minus_one(nextFirst), a, 0, items.length - minus_one(nextFirst));
-            System.arraycopy(items,0, a, items.length - minus_one(nextFirst), minus_one(nextLast));
+            System.arraycopy(items, front, a, 0, contain - front);
+            System.arraycopy(items,0, a, contain - front, nextLast);
         }
         items = a;
-        nextFirst = items.length - 1;
-        nextLast = size;
+        contain /= 2;
+        front = 0;
+        nextLast = plus_one(size);
     }
     public boolean isEmpty() {
         return size == 0;
@@ -91,12 +93,11 @@ public class ArrayDeque<T> {
     }
     public T removeFirst() {
         T temp;
-        nextFirst = plus_one(nextFirst);
-        temp  = get(nextFirst);
-        items[nextFirst] = null;
+        temp  = get(0);
+        items[front] = null;
+        front = plus_one(front);
         size--;
         load_ratio = (float)size / items.length;
-
         if (load_ratio < 0.25) {
            shrink();
         }
@@ -104,8 +105,8 @@ public class ArrayDeque<T> {
     }
     public T removeLast() {
         T temp;
+        temp  = get(size - 1);
         nextLast = minus_one(nextLast);
-        temp = get(nextLast);
         items[nextLast] = null;
         size--;
         load_ratio = (float)size / items.length;
@@ -115,16 +116,19 @@ public class ArrayDeque<T> {
         return temp;
     }
     public T get(int index) {
-        if (index >= size) {
+        if (index >= size || index < 0 || isEmpty()) {
             return null;
         }
-        if (minus_one(nextLast) > plus_one(nextFirst)) {  //循环数组未越界情况
-            return items[plus_one(nextFirst) + index];
-        }
-        if (items.length - plus_one(nextFirst) > index) { //循环数组越界情况1
-            return items[plus_one(nextFirst) + index];
+//        if (nextLast > front) {  //循环数组未越界情况   该情况被下方循环数组越界情况1包含
+//            return items[front + index];
+//        }
+//        if (items.length - front > index) { //循环数组越界情况1
+//            return items[front + index];
+//        }
+        if (front + index < contain) {     //等效替代了上述两种情况
+            return items[front + index];
         }
         //循环数组越界情况2
-        return items[plus_one(nextFirst) - items.length + index];
+        return items[front - items.length + index];
     }
 }
