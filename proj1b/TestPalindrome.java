@@ -8,7 +8,7 @@ public class TestPalindrome {
 
     @Test
     public void testWordToDeque() {
-        Deque d = palindrome.wordToDeque("persiflage");
+        Deque<Character> d = palindrome.wordToDeque("persiflage");
         String actual = "";
         for (int i = 0; i < "persiflage".length(); i++) {
             actual += d.removeFirst();
@@ -18,6 +18,7 @@ public class TestPalindrome {
 
     @Test
     public void testisPalindrome() {
+       /* For single parameter Test.*/
         String a = "asddsa";
         String b = "asddas";
         String singleWord = "a";
@@ -28,5 +29,11 @@ public class TestPalindrome {
         assertTrue(palindrome.isPalindrome(singleWord));
         assertTrue(palindrome.isPalindrome(noWord));
         assertFalse(palindrome.isPalindrome(c));
+
+        /* For two parameters Test.*/
+        CharacterComparator offByOne = new OffByOne();
+        assertFalse(palindrome.isPalindrome("asddsa",offByOne));
+        assertTrue(palindrome.isPalindrome("flake",offByOne));
+
     }
 }
